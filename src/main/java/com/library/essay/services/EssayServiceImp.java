@@ -2,51 +2,37 @@ package com.library.essay.services;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 import com.library.essay.persistence.entities.Essay;
+import com.library.essay.utils.HibernateUtil;
 
 public class EssayServiceImp implements EssayService {
 
 	@Override
 	public Essay getEssay(long id) {
 
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("PersistenceUnit");
-		EntityManager entityManager = factory.createEntityManager();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		Essay essay = entityManager.find(Essay.class, id);
+		Essay essay = (Essay) session.get(Essay.class, id);
 
-		if (entityManager != null) {
-			entityManager.close();
-		}
-		if (factory != null) {
-			factory.close();
-		}
+		session.close();
 
 		return essay;
 	}
 
 	@Override
 	public List<Essay> getEssays() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("PersistenceUnit");
-		EntityManager entityManager = factory.createEntityManager();
 
-		TypedQuery<Essay> query = entityManager.createQuery("from Essay", Essay.class);
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		List<Essay> resultList = query.getResultList();
+		Query essayQuery = session.createQuery("from Essay");
+		List<Essay> essayList = essayQuery.list();
 
-		if (entityManager != null) {
-			entityManager.close();
-		}
-		if (factory != null) {
-			factory.close();
-		}
+		session.close();
 
-		return resultList;
+		return essayList;
 	}
 
 	@Override
@@ -54,98 +40,47 @@ public class EssayServiceImp implements EssayService {
 
 		Essay savedEssay = null;
 
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("PersistenceUnit");
-		EntityManager entityManager = factory.createEntityManager();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		EntityTransaction transaction = entityManager.getTransaction();
+		session.beginTransaction();
 
-		try {
-			transaction.begin();
+		session.saveOrUpdate(essay);
+		savedEssay = essay;
 
-			Long essayId = essay.getId();
-			if (essayId == null || essayId <= 0) {
-				entityManager.persist(essay);
-				savedEssay = essay;
-			} else {
-				savedEssay = entityManager.merge(essay);
-			}
+		session.getTransaction().commit();
+		session.close();
 
-			transaction.commit();
-		} catch (Exception e) {
-			if (transaction.isActive()) {
-				transaction.rollback();
-			}
-		}
-
-		if (entityManager != null) {
-			entityManager.close();
-		}
-		if (factory != null) {
-			factory.close();
-		}
 		return savedEssay;
 	}
 
 	@Override
 	public void delete(Essay essay) {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("PersistenceUnit");
-		EntityManager entityManager = factory.createEntityManager();
 
-		EntityTransaction transaction = entityManager.getTransaction();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		try {
-			transaction.begin();
+		session.beginTransaction();
 
-			Long essayId = essay.getId();
+		Long essayId = essay.getId();
+		Essay essayToDelete = (Essay) session.get(Essay.class, essayId);
 
-			if (essayId > 0) {
-				Essay essayToDelete = entityManager.find(Essay.class, essayId);
-				entityManager.remove(essayToDelete);
-			}
-
-			transaction.commit();
-		} catch (Exception e) {
-			if (transaction.isActive()) {
-				transaction.rollback();
-			}
+		if (essay != null) {
+			session.delete(essayToDelete);
 		}
-
-		if (entityManager != null) {
-			entityManager.close();
-		}
-		if (factory != null) {
-			factory.close();
-		}
-
+		session.getTransaction().commit();
+		session.close();
 	}
 
 	@Override
 	public void deleteAll() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("PersistenceUnit");
-		EntityManager entityManager = factory.createEntityManager();
 
-		EntityTransaction transaction = entityManager.getTransaction();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		try {
-			transaction.begin();
+		session.beginTransaction();
 
-			int deletedCount = entityManager.createQuery("delete from Essay").executeUpdate();
+		session.createQuery("delete from Essay").executeUpdate();
 
-			transaction.commit();
-
-			System.out.println("Total " + deletedCount + " essays have been deleted.");
-		} catch (Exception e) {
-			if (transaction.isActive()) {
-				transaction.rollback();
-			}
-		}
-
-		if (entityManager != null) {
-			entityManager.close();
-		}
-		if (factory != null) {
-			factory.close();
-		}
+		session.getTransaction().commit();
+		session.close();
 
 	}
 

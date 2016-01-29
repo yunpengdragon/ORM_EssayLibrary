@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 import com.library.essay.persistence.entities.Essay;
 import com.library.essay.services.EssayService;
 import com.library.essay.services.EssayServiceImp;
+import com.library.essay.utils.HibernateUtil;
 
 public class MainApplication {
 
@@ -58,6 +59,7 @@ public class MainApplication {
 			System.out.println(e);
 		}
 
+		HibernateUtil.shutdown();
 	}
 
 }
