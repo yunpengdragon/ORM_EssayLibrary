@@ -2,12 +2,6 @@ package com.library.essay.application;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-
 import com.library.essay.persistence.entities.Essay;
 import com.library.essay.services.EssayService;
 import com.library.essay.services.EssayServiceImp;

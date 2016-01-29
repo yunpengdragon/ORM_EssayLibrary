@@ -35,7 +35,7 @@ public class EssayServiceImp implements EssayService {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("PersistenceUnit");
 		EntityManager entityManager = factory.createEntityManager();
 
-		TypedQuery<Essay> query = entityManager.createQuery("from Essay", Essay.class);
+		TypedQuery<Essay> query = entityManager.createQuery("select e from Essay e", Essay.class);
 
 		List<Essay> resultList = query.getResultList();
 
@@ -72,6 +72,8 @@ public class EssayServiceImp implements EssayService {
 
 			transaction.commit();
 		} catch (Exception e) {
+
+			e.printStackTrace();
 			if (transaction.isActive()) {
 				transaction.rollback();
 			}
@@ -105,6 +107,8 @@ public class EssayServiceImp implements EssayService {
 
 			transaction.commit();
 		} catch (Exception e) {
+			e.printStackTrace();
+
 			if (transaction.isActive()) {
 				transaction.rollback();
 			}
@@ -135,6 +139,8 @@ public class EssayServiceImp implements EssayService {
 
 			System.out.println("Total " + deletedCount + " essays have been deleted.");
 		} catch (Exception e) {
+			e.printStackTrace();
+
 			if (transaction.isActive()) {
 				transaction.rollback();
 			}
