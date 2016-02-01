@@ -9,8 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+
 @Entity
 @Table(name = "Essay")
+@Audited
 public class Essay implements Serializable {
 
 	@Id

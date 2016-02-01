@@ -1,13 +1,5 @@
 package com.library.essay.application;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-
 import com.library.essay.persistence.entities.Essay;
 import com.library.essay.services.EssayService;
 import com.library.essay.services.EssayServiceImp;
@@ -24,39 +16,27 @@ public class MainApplication {
 		essay.setContent("my content");
 
 		Essay savedEssay = essayService.saveOrUpdate(essay);
-		Essay myEssay = essayService.getEssay(savedEssay.getId());
+
+		savedEssay.setAuthor("Yunpeng");
+		savedEssay = essayService.saveOrUpdate(savedEssay);
+
+		savedEssay.setTitle("Human Evolution");
+		savedEssay = essayService.saveOrUpdate(savedEssay);
+
+		Long savedEssayId = savedEssay.getId();
+
+		Essay myEssay = essayService.getEssay(savedEssayId);
 
 		System.out.println("====================essayService.getEssay()========================");
 		System.out.println(myEssay);
 
-		for (int i = 0; i < 5; i++) {
-			Essay iEssay = new Essay();
-			iEssay.setTitle("test title " + i);
-			iEssay.setAuthor("test author " + i);
-			iEssay.setContent("test content " + i);
+		essayService.delete(savedEssay);
 
-			essayService.saveOrUpdate(iEssay);
-		}
+		essayService.printRevisions(savedEssayId);
 
-		List<Essay> essayList = essayService.getEssays();
-		System.out.println("====================essayService.getEssays()========================");
-		for (Essay e : essayList) {
-			System.out.println(e);
-		}
+		essayService.printRevisionsAuditQuery(savedEssayId);
 
-		essayService.delete(myEssay);
-		essayList = essayService.getEssays();
-		System.out.println("===============After essayService.delete(), essayService.getEssays()===================");
-		for (Essay e : essayList) {
-			System.out.println(e);
-		}
-
-		essayService.deleteAll();
-		essayList = essayService.getEssays();
-		System.out.println("=================After essayService.deleteAll(), essayService.getEssays()===============");
-		for (Essay e : essayList) {
-			System.out.println(e);
-		}
+		//essayService.deleteAll();
 
 	}
 

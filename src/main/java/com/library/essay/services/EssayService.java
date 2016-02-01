@@ -15,4 +15,8 @@ public interface EssayService {
 	void delete(Essay essay);
 
 	void deleteAll();
+
+	void printRevisions(Long essayId);
+
+	void printRevisionsAuditQuery(Long essayId);
 }
