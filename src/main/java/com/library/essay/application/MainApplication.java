@@ -1,5 +1,7 @@
 package com.library.essay.application;
 
+import java.util.List;
+
 import com.library.essay.persistence.entities.Essay;
 import com.library.essay.services.EssayService;
 import com.library.essay.services.EssayServiceImp;
@@ -29,12 +31,20 @@ public class MainApplication {
 
 		System.out.println("====================essayService.getEssay()========================");
 		System.out.println(myEssay);
+		
+		List<Essay> essayList2 = essayService.getEssaysCriteriaQuery();
+		System.out.println("====================essayService.getEssaysCriteriaQuery()========================");
+		for (Essay e : essayList2) {
+			System.out.println(e);
+		}
 
 		essayService.delete(savedEssay);
 
 		essayService.printRevisions(savedEssayId);
 
 		essayService.printRevisionsAuditQuery(savedEssayId);
+		
+		
 
 		//essayService.deleteAll();
 
