@@ -6,7 +6,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import com.library.essay.persistence.entities.Essay;
 
@@ -37,6 +41,33 @@ public class EssayServiceImp implements EssayService {
 
 		TypedQuery<Essay> query = entityManager.createQuery("select e from Essay e", Essay.class);
 
+		List<Essay> resultList = query.getResultList();
+
+		if (entityManager != null) {
+			entityManager.close();
+		}
+		if (factory != null) {
+			factory.close();
+		}
+
+		return resultList;
+	}
+
+	@Override
+	public List<Essay> getEssaysCriteriaQuery() {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("PersistenceUnit");
+		EntityManager entityManager = factory.createEntityManager();
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+		// Query for a List of objects.
+		CriteriaQuery<Essay> criteriaQuery = criteriaBuilder.createQuery(Essay.class);
+		Root<Essay> essayRoot = criteriaQuery.from(Essay.class);
+
+		criteriaQuery.select(essayRoot).where(criteriaBuilder.greaterThan(essayRoot.get("id"), 1))
+				.orderBy(criteriaBuilder.desc(essayRoot.get("id")));
+
+		Query query = entityManager.createQuery(criteriaQuery);
 		List<Essay> resultList = query.getResultList();
 
 		if (entityManager != null) {

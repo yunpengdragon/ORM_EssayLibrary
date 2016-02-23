@@ -37,6 +37,12 @@ public class MainApplication {
 		for (Essay e : essayList) {
 			System.out.println(e);
 		}
+		
+		List<Essay> essayList2 = essayService.getEssaysCriteriaQuery();
+		System.out.println("====================essayService.getEssaysCriteriaQuery()========================");
+		for (Essay e : essayList2) {
+			System.out.println(e);
+		}
 
 		essayService.delete(myEssay);
 		essayList = essayService.getEssays();

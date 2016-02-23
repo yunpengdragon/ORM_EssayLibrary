@@ -15,4 +15,6 @@ public interface EssayService {
 	void delete(Essay essay);
 
 	void deleteAll();
+
+	List<Essay> getEssaysCriteriaQuery();
 }
